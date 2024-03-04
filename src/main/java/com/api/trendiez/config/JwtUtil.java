@@ -2,10 +2,14 @@ package com.api.trendiez.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.Base64;
 import java.util.function.Function;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Component
 public class JwtUtil {
@@ -23,6 +27,9 @@ public class JwtUtil {
     }
 
     private Claims extractAllClaims(String token) {
+        Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+        logger.info("Received token: " + token);
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
     }
 }
+

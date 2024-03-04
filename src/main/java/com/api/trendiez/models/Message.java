@@ -30,7 +30,7 @@ import java.util.Date;
         // getters and setters
 
 
-        public String getId() {
+        public Message getId() {
             return id;
         }
 
@@ -107,5 +107,9 @@ import java.util.Date;
                     ", createdAt=" + createdAt +
                     ", updatedAt=" + updatedAt +
                     '}';
+        }
+
+        public String getChatId() {
+            return "success";
         }
     }

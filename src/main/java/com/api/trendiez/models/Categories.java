@@ -1,6 +1,8 @@
 package com.api.trendiez.models;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 // import springboot and mongodb dependencies
@@ -32,6 +34,9 @@ public class Categories {
 
     private String barLabel = "Bar";
     private List<String> barItems = Arrays.asList("bar", "liquor_store", "night_club", "casino");
+
+    public Categories(Object category, List<Story> stories) {
+    }
 
     public String getId() {
         return id;
@@ -154,5 +159,9 @@ public class Categories {
                 ", barLabel='" + barLabel + '\'' +
                 ", barItems=" + barItems +
                 '}';
+    }
+
+    public Collection<Object> getStories() {
+        return new ArrayList<>();
     }
 }

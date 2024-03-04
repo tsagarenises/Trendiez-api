@@ -37,6 +37,8 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	implementation ("com.google.api-client:google-api-client:1.31.5")
+	//implementation ("com.google.auth:google-auth-oauth2-library:1.23.0") // Replace with latest stable version
 
 }
 
