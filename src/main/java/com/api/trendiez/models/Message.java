@@ -31,7 +31,7 @@ import java.util.Date;
 
 
         public Message getId() {
-            return id;
+            return null;
         }
 
         public void setId(String id) {

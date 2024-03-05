@@ -39,7 +39,7 @@ public class ChatController {
             // Manually populate users and latestMessage
             List<String> userIds = chat.getUsers().stream().map(User::getId).collect(Collectors.toList());
             chat.setUsers(userRepository.findAllById(userIds));
-            chat.setLatestMessage(messageRepository.findById(chat.getLatestMessage().getId()).orElse(null));
+            //chat.setLatestMessage(messageRepository.findById(chat.getLatestMessage().getId()).orElse(null));
             return ResponseEntity.ok(chat);
         } else {
             Chat newChat = new Chat();

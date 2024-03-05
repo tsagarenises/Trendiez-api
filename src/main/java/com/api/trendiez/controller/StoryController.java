@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/story")
 public class StoryController {
-
     private final StoryService storyService;
     private final CategoriesService categoriesService;
     @Autowired
@@ -64,7 +63,8 @@ public class StoryController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/")
+
+    @GetMapping("/categories")
     public ResponseEntity<List<Categories>> getStoryCategories() {
         try {
             List<Categories> storyCategories = categoriesService.getAllCategories().stream()
