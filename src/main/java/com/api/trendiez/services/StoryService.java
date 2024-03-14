@@ -2,6 +2,11 @@ package com.api.trendiez.services;
 
 import com.api.trendiez.Repository.StoryRepository;
 import com.api.trendiez.models.Story;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,8 +17,11 @@ import java.util.Optional;
 @Service
 public class StoryService {
  private final StoryRepository storyRepository;
+    private final MongoTemplate mongoTemplate;
 
-    public StoryService(StoryRepository storyRepository) {
+    @Autowired
+    public StoryService(StoryRepository storyRepository, MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
         this.storyRepository = storyRepository;
     }
     public Story save(Story story){
@@ -49,5 +57,10 @@ public class StoryService {
 
     public List<Story> getStoriesByCategory(Object category) {
         return new ArrayList<> ();
+    }
+    public void addViewToStory(String storyId, String userId) throws Exception {
+        Query query = new Query(Criteria.where("_id").is(storyId));
+        Update update = new Update().addToSet("views", userId);
+        mongoTemplate.updateFirst(query, update, Story.class);
     }
 }

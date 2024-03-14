@@ -80,4 +80,23 @@ public class StoryController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PatchMapping("/view")
+    public ResponseEntity<Void> updateStoryViews(@PathVariable String storyId) throws Exception {
+        // Verify authorization token using your security configuration (replace with your implementation)
+//        boolean authorized = verifyAuthToken(authorizationHeader);
+//        if (!authorized) {
+//            throw new UnauthorizedException("Invalid authorization token");
+//        }
+
+        try {
+            String userId = null;
+            storyService.addViewToStory(storyId, userId);
+            return ResponseEntity.noContent().build(); // Return 204 No Content on success
+        } catch (Exception e) {
+            // Handle exceptions appropriately, e.g., log the error and return a 500 Internal Server Error
+            //logger.error("Error updating story views:", e);
+            throw new Exception("Error updating story views", e); // Customize exception type and message
+        }
+    }
 }
