@@ -5,6 +5,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
 // define the notification schema class
 @Document(collection = "notifications")
 public class Notification {
@@ -17,9 +19,9 @@ public class Notification {
     private String type;
     private String data;
     private boolean isRead;
-
-    @DBRef
-    private User recipient;
+    private String recipient;
+    private Date createdAt;
+    private Date updateAt;
 
     public String getId() {
         return id;
@@ -69,12 +71,28 @@ public class Notification {
         isRead = read;
     }
 
-    public User getRecipient() {
+    public String getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(User recipient) {
+    public void setRecipient(String recipient) {
         this.recipient = recipient;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 
     @Override
@@ -87,6 +105,8 @@ public class Notification {
                 ", data='" + data + '\'' +
                 ", isRead=" + isRead +
                 ", recipient=" + recipient +
+                ", createdAt=" + createdAt +
+                ", updateAt=" + updateAt +
                 '}';
     }
 }
