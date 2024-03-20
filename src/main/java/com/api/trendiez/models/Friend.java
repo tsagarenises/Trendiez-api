@@ -8,20 +8,14 @@ import java.util.Date;
 @Document(collection = "friends")
 public class Friend {
 
-    public enum FriendshipStatus {
-        FRIENDS, ADDED, ADD
-    }
-
     @Id
     private String id;
 
-    @DBRef
-    private User requester;
+    private String requester;
 
-    @DBRef
-    private User recipient;
+    private String recipient;
 
-    private FriendshipStatus status = FriendshipStatus.ADD;
+    private String status;
 
     private Date createdAt;
     private Date updatedAt;
@@ -34,27 +28,27 @@ public class Friend {
         this.id = id;
     }
 
-    public User getRequester() {
+    public String getRequester() {
         return requester;
     }
 
-    public void setRequester(User requester) {
+    public void setRequester(String requester) {
         this.requester = requester;
     }
 
-    public User getRecipient() {
+    public String getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(User recipient) {
+    public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 
-    public FriendshipStatus getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(FriendshipStatus status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 
