@@ -4,6 +4,8 @@ import com.api.trendiez.Repository.StoryRepository;
 import com.api.trendiez.models.Story;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,23 +22,9 @@ public class StoryService {
         return storyRepository.save(story);
     }
 
-    public List<Integer> getStoriesByDayAndPlace(String day, String place) {
-        List<Integer> data = new ArrayList<>();
 
-        // Loop through the hours of the day
-        for (int i = 9; i <= 20; i++) {
-            // Fetch and aggregate the stories for the given day, place and hour
-            // You would need to replace this with your actual database query
-           // int storyCount = fetchAndAggregateStories(day, place, i);
-
-          //  data.add(storyCount);
-        }
-
-        return data;
-    }
-
-    public Optional<Story> getStoryById(String s) {
-        return storyRepository.findById(s);
+    public Optional<Story> getStoryById(String id) {
+        return storyRepository.findById(id);
     }
 
     public List<Story> getAllStories() {
