@@ -28,6 +28,8 @@ dependencies {
 	implementation("org.springframework.data:spring-data-mongodb:4.1.2") {
 		exclude(group = "org.mongodb", module = "mongodb-driver")
 	}
+
+
 	implementation("org.springframework.security:spring-security-crypto:6.1.2")
 	implementation("io.jsonwebtoken:jjwt-orgjson:0.11.5")
 	implementation("io.jsonwebtoken:jjwt-api:0.11.5")

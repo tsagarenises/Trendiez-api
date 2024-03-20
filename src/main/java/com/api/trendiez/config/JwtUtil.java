@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
 @Component
 public class JwtUtil {
 
-    @Value("${jwt.secret}")
-    private String secret;
+   // @Value("${jwt.secret}")  NEED TO PUT THIS BACK
+    private String secret = "TRENDIEZ";
 
     public String extractUserId(String token) {
         return extractClaim(token, Claims::getSubject);

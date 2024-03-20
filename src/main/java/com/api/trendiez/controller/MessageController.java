@@ -25,11 +25,11 @@ public class MessageController {
     public ResponseEntity<String> createMessage(@RequestBody Message message, @PathVariable String uid) {
         try {
             Optional<Message> createdMessage = messageService.createMessage(message, uid);
-            Chat chat = chatService.updateLatestMessage(message.getChatId(), createdMessage.get());
+//            Chat chat = chatService.updateLatestMessage(message.getChatId(), createdMessage.get());
 
-            if (chat == null) {
-                throw new Exception();
-            }
+//            if (chat == null) {
+//                throw new Exception();
+//            }
 
 //            chatService.sendNotification(chat, createdMessage, uid);
 //            chatService.sendMessage(chat, createdMessage);

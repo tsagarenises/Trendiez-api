@@ -1,7 +1,8 @@
 package com.api.trendiez.controller;
 import com.api.trendiez.models.AuthResponse;
-import com.api.trendiez.models.LoginRequest;
-import com.api.trendiez.models.LoginResponse;
+import com.api.trendiez.models.GoogleSignUpRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.api.trendiez.models.User;
 import com.api.trendiez.services.UserService;
 //import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -31,15 +32,15 @@ import java.util.Base64;
 import java.util.Collections;
 
 @RestController
-@RequestMapping("/api/user")
+@RequestMapping("api/v1/users")
 public class UserController {
-
-    @Value("${jwt.secret}")
-    private String jwtSecret;
-    @Value("${jwt.secret.2}")
-    private String jwtSecret2;
-    @Value("${GOOGLE_CLIENT_ID}")
-    private String clientId;
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+   // @Value("${jwt.secret}")
+    private String jwtSecret = "TRENDIEZ";
+  //  @Value("${jwt.secret.2}")
+    private String jwtSecret2 ="oB4y4OLFC6Xuc/rzt8zNywcpQ8/Q/1czYqy7hAPJf1o=";
+  //  @Value("${GOOGLE_CLIENT_ID}")
+    private String clientId ="89091633819-lcb2jiuqnnlbqlrf7fppr7u9ubmhiosj.apps.googleusercontent.com";
 
     private final UserService userService;
     @Autowired
@@ -107,15 +108,19 @@ public class UserController {
     // Implement other endpoints similarly
     // @PostMapping("/registerWithGoogle")
     @PostMapping("/registerWithGoogle")
-    public ResponseEntity<Object> SignUpWithGoogle(@RequestBody String token) {
+    public ResponseEntity<Object> SignUpWithGoogle(@RequestBody GoogleSignUpRequest googleSignUpRequest) {
         try {
+            String idToken = googleSignUpRequest.getIdToken();
+            String userId = googleSignUpRequest.getUserId();
+            logger.info("GENERATED TOKEN: "+idToken);
+            logger.info("USER ID: "+userId);
           //  Claims claims = Jwts.parser().setSigningKeyResolver(SigningKeyResolver.secret(secretKey)).parseClaimsJws(token).getBody();
             Claims claims = Jwts.parser()
                     .setSigningKey(jwtSecret2) // Provide your secret key here
-                    .parseClaimsJws(token)
+                    .parseClaimsJws(idToken)
                     .getBody();
             // Extract user information from claims
-            String userId = claims.getSubject();
+            //String userId = claims.getSubject();
             String email = (String) claims.get("email");
             String name = (String) claims.get("name");
             String picture = (String) claims.get("picture");
@@ -124,6 +129,7 @@ public class UserController {
             User existingUser = userService.findByEmail(email);
 
             if (existingUser != null) {
+                logger.info("Existing user: "+existingUser.toString());
                 // Account already exists, return error
                 return ResponseEntity.badRequest().body("Account already exists");
             } else {
@@ -143,7 +149,7 @@ public class UserController {
                         .setSubject(savedUser.getId())
                         .signWith(SignatureAlgorithm.HS512, jwtSecret2)
                         .compact();
-
+                logger.info("Created User: "+savedUser.toString());
                 // Return successful response with user and token
                 return ResponseEntity.status(HttpStatus.OK).body(new AuthResponse(savedUser, jtoken));
             }
