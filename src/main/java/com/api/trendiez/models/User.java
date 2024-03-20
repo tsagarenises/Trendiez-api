@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -57,6 +58,20 @@ public class User {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+        this.about = "";
+        this.createdAt = new Date();
+        this.address = "";
+        this.gender = "";
+        this.picture = "";
+        this.updatedAt = new Date();
+        this.interests = new ArrayList<>();
+        this.phone = "";
+        this.username = email;
+        this.name = email;
+        this.fcmToken = "";
+        this.authenticationEnum = new ArrayList<>();
+
+
     }
 
     public User() {

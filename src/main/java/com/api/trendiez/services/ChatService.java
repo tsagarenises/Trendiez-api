@@ -1,12 +1,14 @@
 package com.api.trendiez.services;
 
+import com.api.trendiez.Repository.ChatRepository;
+import com.api.trendiez.Repository.UserRepository;
 import com.api.trendiez.models.Chat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -14,62 +16,38 @@ import com.api.trendiez.models.Message;
 import com.api.trendiez.models.User;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @EnableMongoRepositories
-
 @Service
 public class ChatService {
-    private MongoTemplate mongoTemplate;
+
     @Autowired
-    public ChatService(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
-    public Chat findById(String id) {
-        return mongoTemplate.findById(id, Chat.class);
-    }
-
-    public Chat findByUsers(String uid, String userId) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("users").all(uid, userId));
-        return mongoTemplate.findOne(query, Chat.class);
+    private ChatRepository chatRepository;
+    @Autowired
+    private UserRepository userRepository;
+    public Optional<Chat> findChatByUsers(String uid, String userId) {
+        return chatRepository.findChatByUsersContains(uid, userId);
     }
 
-    public List<Chat> findByUser(String uid) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("users").in(uid));
-        query.addCriteria(Criteria.where("latestMessage").exists(true));
-        return mongoTemplate.find(query, Chat.class);
-    }
-
-    public Chat createChat(String userId) {
+    public Chat createChat(String uid, String userId) {
+//        List<User> users = Arrays.asList(uid, userId)
+//                .stream()
+//                .map(id -> userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found: " + id)))
+//                .collect(Collectors.toList());
+        List<String> users = new ArrayList<>();
+        users.add(uid);
+        users.add(userId);
         Chat chat = new Chat();
-        chat.setUsers(List.of( new User(userId)));
-        return mongoTemplate.save(chat);
-    }
-
-    public Chat updateLatestMessage(String chatId, Message message) {
-        Chat chat = findById(chatId);
-        chat.setLatestMessage(message);
-        return mongoTemplate.save(chat);
-    }
-
-    public Chat populateChat(Chat chat) {
-        List<User> users = new ArrayList<>();
-        for (User user : chat.getUsers()) {
-            User fetchedUser = mongoTemplate.findById(user.getId(), User.class);
-            users.add(fetchedUser);
-        }
         chat.setUsers(users);
-
-        Message message = mongoTemplate.findById(chat.getLatestMessage().getId(), Message.class);
-        chat.setLatestMessage(message);
-
-        return chat;
+        return chatRepository.save(chat);
     }
 
-
-    public List<Chat> populateChats(List<Chat> chats) {
-        chats.forEach(this::populateChat);
-        return chats;
+    public Chat findById(String id) {
+        return chatRepository.findById(id).orElse(null);
     }
+    public List<Chat> findAllChats() {
+        return chatRepository.findAll();
+    }
+
 }

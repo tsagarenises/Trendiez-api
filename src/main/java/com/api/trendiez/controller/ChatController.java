@@ -1,68 +1,53 @@
 package com.api.trendiez.controller;
 import com.api.trendiez.Repository.ChatRepository;
-import com.api.trendiez.Repository.MessageRepository;
-import com.api.trendiez.Repository.UserRepository;
-import com.api.trendiez.config.JwtUtil;
 import com.api.trendiez.models.Chat;
 import com.api.trendiez.models.User;
+import com.api.trendiez.services.ChatService;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/chat")
+@RequestMapping("/api/v1/chats")
 public class ChatController {
-
     @Autowired
-    private ChatRepository chatRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private MessageRepository messageRepository;
-
-    @Autowired
-    private JwtUtil jwtUtil;
-
+    private ChatService chatService;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<?> getChatByUserId(@PathVariable String userId, @RequestHeader("Authorization") String token) {
-        String uid = jwtUtil.extractUserId(token.substring(7)); // Remove "Bearer " from token
-        List<Chat> chats = chatRepository.findByUsersContaining(uid);
+    public ResponseEntity<Chat> getChat(@PathVariable String userId, @RequestHeader("uid") String uid) {
+        try {
+            Optional<Chat> chat = chatService.findChatByUsers(uid, userId);
 
-        if (!chats.isEmpty()) {
-            Chat chat = chats.get(0);
-            // Manually populate users and latestMessage
-            List<String> userIds = chat.getUsers().stream().map(User::getId).collect(Collectors.toList());
-            chat.setUsers(userRepository.findAllById(userIds));
-            //chat.setLatestMessage(messageRepository.findById(chat.getLatestMessage().getId()).orElse(null));
-            return ResponseEntity.ok(chat);
-        } else {
-            Chat newChat = new Chat();
-            newChat.setUsers(Arrays.asList(userRepository.findById(uid).orElse(null), userRepository.findById(userId).orElse(null)));
-            chatRepository.save(newChat);
-            List<String> newUserIds = newChat.getUsers().stream().map(User::getId).collect(Collectors.toList());
-            newChat.setUsers(userRepository.findAllById(newUserIds));
-            return ResponseEntity.ok(newChat);
+            if (chat.isPresent()) {
+                return ResponseEntity.ok(chat.get());
+            } else {
+                Chat newChat = chatService.createChat(uid, userId);
+                return ResponseEntity.ok(newChat);
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Error processing request", e);
         }
     }
-
-
-
-
-
-//    @GetMapping("/")
-//    public ResponseEntity<?> getChats(@RequestParam(required = false) String id) {
-//        if (id != null) {
-//            Optional<Chat> chat = chatRepository.findById(id);
-//            return chat.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-//        } else {
-//            List<Chat> chats = chatRepository.findByUsersContaining(/* Insert authenticated user's ID here */);
-//            return ResponseEntity.ok(chats);
-//        }
-//    }
+    @GetMapping("/chats")
+    public ResponseEntity<?> getChat(@RequestParam(required = false) String id) {
+        try {
+            if (id != null) {
+                Chat chat = chatService.findById(id);
+                return new ResponseEntity<>(chat, HttpStatus.OK);
+            } else {
+                List<Chat> chats = chatService.findAllChats();
+                return new ResponseEntity<>(chats, HttpStatus.OK);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
+

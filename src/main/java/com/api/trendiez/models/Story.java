@@ -22,14 +22,9 @@ public class Story {
     private String caption;
     private List<String> views;
 
-    @DBRef
-    private User owner;
+    private String owner;
 
-    @DBRef
-    private Place place;
-
-
-    private Categories categories; // embed the categories class as a field
+    private String place;
 
     public String getId() {
         return id;
@@ -95,44 +90,19 @@ public class Story {
         this.views = views;
     }
 
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
-    public void setOwner(User owner) {
+    public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    public Place getPlace() {
+    public String getPlace() {
         return place;
     }
 
-    public void setPlace(Place place) {
+    public void setPlace(String place) {
         this.place = place;
-    }
-
-    public Categories getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Categories categories) {
-        this.categories = categories;
-    }
-
-    @Override
-    public String toString() {
-        return "Story{" +
-                "id='" + id + '\'' +
-                ", file='" + file + '\'' +
-                ", rating=" + rating +
-                ", category='" + category + '\'' +
-                ", isSaved=" + isSaved +
-                ", isDeleted=" + isDeleted +
-                ", caption='" + caption + '\'' +
-                ", views=" + views +
-                ", owner=" + owner +
-                ", place=" + place +
-                ", categories=" + categories +
-                '}';
     }
 }
